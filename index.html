@@ -1,0 +1,72 @@
+<html>
+<head>
+    <title>Web Socket Performance Test</title>
+</head>
+<body>
+
+<label>Connection Status:</label>
+<label id="connectionLabel"></label><br />
+
+<form onsubmit="return false;">
+    <h3>Serial Monitor</h3>
+    <textarea id="output" style="width:100%;height:500px;"></textarea>
+    <br>
+    <input type="button" value="Clear" onclick="clearText()">
+</form>
+
+<script src="reconnecting-websocket.js"></script>
+
+<script type="text/javascript">
+    const PING_INTERVAL_MILLIS = 5000;
+
+    var output = document.getElementById('output');
+    var connectionLabel = document.getElementById('connectionLabel');
+
+   
+	if (window.WebSocket) {
+        socket = new WebSocket("ws://10.0.1.179:81/ws");
+
+        socket.onmessage = function(event) {
+            output.value += event.data; // + "\r\n";
+        };
+        socket.onopen = function(event) {
+            isRunning = true;
+            connectionLabel.innerHTML = "Connected";
+        };
+        socket.onclose = function(event) {
+            isRunning = false;
+            connectionLabel.innerHTML = "Disconnected";
+        };
+        socket.onerror = function(event) {
+            connectionLabel.innerHTML = "Error";
+        };
+    } else {
+        alert("Your browser does not support Web Socket.");
+    }
+    /*window.setInterval(function() {
+        send("ping");
+    }, PING_INTERVAL_MILLIS);
+	*/
+		
+    function send(data) {
+        if (!window.WebSocket) {
+            return;
+        }
+
+        if (socket.readyState == WebSocket.OPEN) {
+            var message = data;
+            output.value += 'sending : ' + data + '\r\n';
+            socket.send(message);
+        } else {
+            alert("The socket is not open.");
+        }
+    }
+
+    function clearText() {
+        output.value="";
+    }
+
+</script>
+
+</body>
+</html>
