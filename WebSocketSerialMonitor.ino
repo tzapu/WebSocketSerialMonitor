@@ -29,7 +29,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
         Serial.printf("[%u] Connected from %s url: %s\n", num, ip.toString().c_str(), payload);
 
         // send message to client
-        webSocket.sendTXT(num, "Connected to Serial on " + ip.toString() + "\n");
+        webSocket.sendTXT(num, "Connected to Serial on " + WiFi.localIP().toString() + "\n");
       }
       break;
     case WStype_TEXT:
