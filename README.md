@@ -12,8 +12,11 @@ Using this sketch and an extra ESP8266 module you can monitor the serial output 
 
 That's it, you should see live serial data streaming from your devices.
 
-### Future plans (if this proves useful to people)
+### Future plans
+(if this proves useful to people)
 - add control of gpio pins so you can reset monitored module for instance
 - enable switching of baud rates on the fly
 - make the web page nicer and more app like
+- compress and concatenate files to be served straight from spiffs
+- add MDNS for local name resolution
 - ...
