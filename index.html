@@ -6,10 +6,6 @@
 
 <p>Please follow instruction on <a href="https://github.com/tzapu/WebSocketSerialMonitor">https://github.com/tzapu/WebSocketSerialMonitor</a> to see how to get started.</p>
 
-<label>Connection Status:</label>
-<label id="connectionLabel"></label>
-<br />
-
 
 <form onsubmit="return false;">
     <h3>Serial Monitor</h3>
@@ -17,6 +13,10 @@
     <input type="text" id="host" value="" style="width:160px;" placeholder="ws://hostname:port/ws"/>
     <input type="button" value="Connect" onclick="connect(host.value)" />
     <br>
+	<label>Connection Status:</label>
+	<input type="text" id="connectionLabel" readonly="true" value="Idle"/>
+	<br />
+
     <br>
     <textarea id="output" style="width:100%;height:500px;"></textarea>
     <br>
@@ -34,6 +34,7 @@
 	function connect(host) {
 		console.log('connect', host);
 		if (window.WebSocket) {
+			connectionLabel.value = "Connecting";
 			if(socket) {
 				socket.close();
 	            socket = null;
@@ -48,16 +49,16 @@
 	        };
 	        socket.onopen = function(event) {
 	            isRunning = true;
-	            connectionLabel.innerHTML = "Connected";
+	            connectionLabel.value = "Connected";
 	        };
 	        socket.onclose = function(event) {
 	            isRunning = false;
-	            connectionLabel.innerHTML = "Disconnected";
+	            connectionLabel.value = "Disconnected";
 //	            socket.removeAllListeners();
 //	            socket = null;
 	        };
 	        socket.onerror = function(event) {
-	            connectionLabel.innerHTML = "Error";
+	            connectionLabel.value = "Error";
 //	            socket.removeAllListeners();
 //	            socket = null;
 	        };
