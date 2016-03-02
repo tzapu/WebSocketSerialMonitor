@@ -52,6 +52,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
 
 }
 
+
+String inputString = "";         // a string to hold incoming data
+boolean stringComplete = false;  // whether the string is complete
+
 void setup() {
   // Serial.begin(921600);
   Serial.begin(115200);
@@ -61,7 +65,7 @@ void setup() {
   Serial.println();
   Serial.println();
   Serial.println();
-  
+
   //WiFiManager
   //Local intialization. Once its business is done, there is no need to keep it around
   WiFiManager wifiManager;
@@ -85,17 +89,48 @@ void setup() {
   webSocket.onEvent(webSocketEvent);
 
   Serial.println("START MIRRORING SERIAL");
+  Serial.println(WiFi.localIP());
+
+  //  Serial.setTimeout(500);
+    inputString.reserve(256);
 }
 
+void serialEvent() {
+  while (Serial.available()) {
+    char inChar = (char)Serial.read();
+    if (inChar == '\n') {
+      stringComplete = true;
+      return;
+    } else {
+      inputString += inChar;
+    }
+  }
+}
+
+
 void loop() {
-  Serial.setTimeout(200);
-  String line = Serial.readStringUntil('\n');
-  if (line.length() > 0) {
-    // add back line ending
-    line += '\n';
+  serialEvent();
+  if (stringComplete) {
+    
+    String line = inputString;
+       // clear the string:
+    inputString = "";
+    stringComplete = false;
+
+    //line += '\n';
     webSocket.broadcastTXT(line);
-    Serial.print(line);
+    Serial.println(line);
   }
   webSocket.loop();
+  /*
+    String line = Serial.readStringUntil('\n');
+    if (line.length() > 0) {
+      // add back line ending
+      line += '\n';
+      webSocket.broadcastTXT(line);
+      Serial.print(line);
+    }
+    webSocket.loop();
+  */
 }
 
